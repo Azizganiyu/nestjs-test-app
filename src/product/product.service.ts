@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -6,48 +8,44 @@ import { Product } from './entities/product.entity';
 @Injectable()
 export class ProductService {
 
-  product: Product[] = [
-    {
-      id: 1,
-      name: 'Rice',
-      price: 300,
-      description: 'some rice',
-      status: 1,
-      quantity: 100,
-      friendly_url: 'rice',
-      image: 'url',
-    },
-    {
-      id: 2,
-      name: 'Beans',
-      price: 400,
-      description: 'some beans',
-      status: 1,
-      quantity: 50,
-      friendly_url: 'rice',
-      image: 'url',
-    },
-  ]
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>
+  ){}
 
 
-  create(data: Product) {
-    this.product.push(data)
-    return data;
+  create(data: Product): Promise<Product> {
+    const product = this.productRepository.create(data);
+    return this.productRepository.save(product);
   }
 
-  findAll(): Product[] {
-    return this.product;
+  findAll(): Promise<Product[]> {
+    return this.productRepository.find();
   }
 
-  findOne(id: number): Product {
-    return this.product[0];
+  async findOne(id: number): Promise<Product> {
+    try {
+      const product = await this.productRepository.findOneOrFail(id);
+      return product;
+    } catch (error) {
+      throw error
+    }
+
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+    const product = await this.findOne(id);
+
+    const updated = {
+      ...product,
+      ...updateProductDto
+    };
+
+    return this.productRepository.save(updated);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number): Promise<Product>  {
+    const product = await this.findOne(id);
+
+    return this.productRepository.remove(product);
   }
 }

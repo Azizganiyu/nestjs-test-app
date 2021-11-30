@@ -12,10 +12,9 @@ export class ProductController {
 
   @ApiCreatedResponse({type: Product})
   @Post()
-  create(@Body() createProductDto: CreateProductDto) : Product {
+  create(@Body() createProductDto: CreateProductDto) : Promise<Product> {
 
     const data = {
-      id: Date.now(),
       status: createProductDto.status? createProductDto.status : 1,
       image: createProductDto.image? createProductDto.image : '/upload/default.png',
       friendly_url: createProductDto.name.trim().replace(/\s+/g, '-'),
@@ -27,24 +26,26 @@ export class ProductController {
   }
 
   @ApiOkResponse({type: Product, isArray: true})
-  @Get()
-  findAll() : Product[] {
+  @Get() 
+  findAll() : Promise<Product[]> {
     return this.productService.findAll();
   }
 
   @ApiOkResponse({type: Product})
   @Get(':id')
-  findOne(@Param('id') id: string): Product {
+  findOne(@Param('id') id: string):  Promise<Product> {
     return this.productService.findOne(+id);
   }
 
+  @ApiOkResponse({type: Product})
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto):  Promise<Product> {
     return this.productService.update(+id, updateProductDto);
   }
 
+  @ApiOkResponse({type: Product})
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string):  Promise<Product>  {
     return this.productService.remove(+id);
   }
 }

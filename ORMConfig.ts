@@ -4,7 +4,13 @@ const ormConfig: SqliteConnectionOptions = {
     type: 'sqlite',
     database: 'db',
     entities: ['dist/src/**/entities/*.entity.js'],
-    synchronize: true
+    synchronize: true,
+    migrations: [
+        'dist/src/db/migrations/*.js'
+    ],
+    cli: {
+        migrationsDir: 'src/db/migrations'
+    }
 };
 
 export default ormConfig;
