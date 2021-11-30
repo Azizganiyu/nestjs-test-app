@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
-export class Product { 
+export class Transaction {
 
     @PrimaryGeneratedColumn()
     @ApiProperty()
@@ -10,31 +10,23 @@ export class Product {
 
     @ApiProperty()
     @Column()
-    name: string;
+    product_id: number;
 
     @ApiProperty()
     @Column()
-    price: number;
+    amount: number;
 
     @ApiProperty()
     @Column()
-    description: string;
+    payment_url: string;
+
+    @ApiProperty()
+    @Column()
+    reference?: string;
 
     @ApiProperty()
     @Column()
     status: number;
-
-    @ApiProperty()
-    @Column()
-    quantity: number;
-
-    @ApiProperty()
-    @Column()
-    friendly_url: string;
-
-    @ApiProperty()
-    @Column()
-    image: string;
 
     @CreateDateColumn()
     @ApiProperty()
@@ -43,4 +35,5 @@ export class Product {
     @UpdateDateColumn()
     @ApiProperty()
     updated_at?: Date;
+
 }
