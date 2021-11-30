@@ -62,8 +62,6 @@ export class TransactionController {
 
     let result =  await this.paymentService.verifyPayment(reference);
 
-    console.log(result.data);
-
     if(!result.data.data.paidAt){
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
